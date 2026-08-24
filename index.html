@@ -79,10 +79,22 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 112%;
-      height: 112%;
-      transform: translate(-50%, -50%);
+      width: 100%;
+      height: 100%;
+      transform: translate(-50%, -50%) scale(1.15);
       pointer-events: none;
+    }
+    @media (max-width: 800px) {
+      #yt-frame-container { transform: translate(-50%, -50%) scale(1.20); }
+    }
+    @media (max-width: 600px) {
+      #yt-frame-container { transform: translate(-50%, -50%) scale(1.25); }
+    }
+    @media (max-width: 450px) {
+      #yt-frame-container { transform: translate(-50%, -50%) scale(1.35); }
+    }
+    @media (max-width: 350px) {
+      #yt-frame-container { transform: translate(-50%, -50%) scale(1.45); }
     }
 
     #yt-frame-container iframe {
