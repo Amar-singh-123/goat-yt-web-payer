@@ -822,8 +822,8 @@
     }
     window.addEventListener('resize', scheduleFit);
     window.addEventListener('orientationchange', scheduleFit);
-    document.addEventListener('fullscreenchange', function () { scheduleFit(); notifyHost('onFullscreenChange', { fullscreen: !!document.fullscreenElement }); });
-    document.addEventListener('webkitfullscreenchange', function () { scheduleFit(); notifyHost('onFullscreenChange', { fullscreen: !!document.webkitFullscreenElement }); });
+    document.addEventListener('fullscreenchange', function () { isFullScreenMode = !!document.fullscreenElement; scheduleFit(); notifyHost('onFullscreenChange', { fullscreen: isFullScreenMode }); });
+    document.addEventListener('webkitfullscreenchange', function () { isFullScreenMode = !!document.webkitFullscreenElement; scheduleFit(); notifyHost('onFullscreenChange', { fullscreen: isFullScreenMode }); });
 
     function applyLayout() {
       if (OPT.accent) document.documentElement.style.setProperty('--accent', '#' + OPT.accent);
@@ -1165,11 +1165,17 @@
       this.classList.remove('show');
     });
 
+    var isFullScreenMode = false;
     document.getElementById('fullscreen-btn').addEventListener('click', function () {
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+      isFullScreenMode = !isFullScreenMode;
+      notifyHost('onFullscreenChange', { fullscreen: isFullScreenMode });
+      
+      if (isFullScreenMode) {
+        if (stage.requestFullscreen) stage.requestFullscreen();
+        else if (stage.webkitRequestFullscreen) stage.webkitRequestFullscreen();
       } else {
-        (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       }
     });
 
