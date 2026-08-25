@@ -1197,7 +1197,6 @@
       hideControlsTimer = setTimeout(function () { controlsEl.classList.add('faded'); }, OPT.autohide);
     }
     stage.addEventListener('mousemove', function () { showControlsBar(); });
-    stage.addEventListener('touchstart', function () { showControlsBar(); }, { passive: true });
 
     /* ---------------------------------------------------------------------------
        Keyboard shortcuts
