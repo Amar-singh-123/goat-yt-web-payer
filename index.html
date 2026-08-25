@@ -227,7 +227,6 @@
       display: flex;
     }
 
-    /* ---------- Overlay control bar ---------- */
     #controls {
       position: absolute;
       left: 0;
@@ -250,6 +249,29 @@
 
     #controls.hidden {
       display: none;
+    }
+    
+    #center-action-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      background: rgba(0, 0, 0, 0.3);
+      opacity: 1;
+      transition: opacity 0.25s ease;
+    }
+
+    #center-action-layer.faded {
+      opacity: 0;
+      pointer-events: none;
+      background: transparent;
+    }
+
+    #center-action-layer button {
+      pointer-events: auto;
     }
 
     #seek-row {
@@ -534,11 +556,6 @@
     </div>
     <div class="cover" id="cover-paused">
       <div class="scrim"></div>
-      <button class="big-play-btn" id="paused-play-btn" aria-label="Play">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-          <path d="M8 5v14l11-7z" />
-        </svg>
-      </button>
     </div>
     <div class="cover" id="cover-ended">
       <div class="scrim"></div>
@@ -561,6 +578,14 @@
       </svg>
       <span>Tap to unmute</span>
     </button>
+
+    <div id="center-action-layer" class="faded">
+      <button class="big-play-btn" id="center-play-pause-btn" aria-label="Play or pause">
+        <svg viewBox="0 0 24 24" fill="currentColor" id="center-icon-play">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+      </button>
+    </div>
 
     <div id="controls">
       <div id="seek-row">
@@ -1041,9 +1066,11 @@
       player.getPlayerState() === 1 ? player.pauseVideo() : player.playVideo();
     }
     function setPlayIcon(showPlay) {
-      document.getElementById('icon-play').outerHTML = showPlay
-        ? '<svg viewBox="0 0 24 24" fill="currentColor" id="icon-play"><path d="M8 5v14l11-7z"/></svg>'
-        : '<svg viewBox="0 0 24 24" fill="currentColor" id="icon-play"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>';
+      var iconHtml = showPlay
+        ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>';
+      document.getElementById('icon-play').innerHTML = iconHtml;
+      document.getElementById('center-icon-play').innerHTML = iconHtml;
     }
     function setMuteIcon(muted) {
       document.getElementById('icon-vol-on').outerHTML = muted
@@ -1079,8 +1106,9 @@
       el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash');
     }
 
-    ['facade-play-btn', 'paused-play-btn'].forEach(function (id) {
-      document.getElementById(id).addEventListener('click', function () { if (playerReady) player.playVideo(); });
+    ['facade-play-btn', 'center-play-pause-btn'].forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (btn) btn.addEventListener('click', togglePlay);
     });
     document.getElementById('replay-btn').addEventListener('click', function () {
       if (playerReady) { player.seekTo(0, true); player.playVideo(); }
@@ -1149,13 +1177,16 @@
        Auto-hide overlay controls
     --------------------------------------------------------------------------- */
     var controlsEl = document.getElementById('controls');
+    var centerLayer = document.getElementById('center-action-layer');
     function showControlsBar(persist) {
       controlsEl.classList.remove('faded');
+      centerLayer.classList.remove('faded');
       scheduleAutoHide(persist);
     }
     function toggleControlsBar() {
       if (!playerReady || player.getPlayerState() !== 1) return;
       controlsEl.classList.toggle('faded');
+      centerLayer.classList.toggle('faded');
       if (!controlsEl.classList.contains('faded')) scheduleAutoHide();
     }
     function scheduleAutoHide(skip) {
