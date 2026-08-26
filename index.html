@@ -1168,8 +1168,17 @@
 
     var isFullScreenMode = false;
     document.getElementById('fullscreen-btn').addEventListener('click', function () {
-      isFullScreenMode = !isFullScreenMode;
-      notifyHost('onFullscreenChange', { fullscreen: isFullScreenMode });
+      var inFlutter = !!(window.YoutubePlayerEvent || window.FlutterChannel || window.flutter_inappwebview);
+      if (inFlutter) {
+        isFullScreenMode = !isFullScreenMode;
+        notifyHost('onFullscreenChange', { fullscreen: isFullScreenMode });
+      } else {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+          (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+        } else {
+          (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+        }
+      }
     });
 
     /* ---------------------------------------------------------------------------
@@ -1238,8 +1247,24 @@
         case 'setVolume': player.setVolume(msg.value); volBar.value = msg.value; break;
         case 'setPlaybackRate': player.setPlaybackRate(msg.value); document.getElementById('speed-select').value = msg.value; break;
         case 'setQuality': player.setPlaybackQuality(msg.value); break;
-        case 'enterFullscreen': document.getElementById('fullscreen-btn').click(); break;
-        case 'exitFullscreen': if (document.fullscreenElement) document.exitFullscreen(); break;
+        case 'enterFullscreen':
+          isFullScreenMode = true;
+          var inFlutter = !!(window.YoutubePlayerEvent || window.FlutterChannel || window.flutter_inappwebview);
+          if (!inFlutter) {
+            if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+              (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage);
+            }
+          }
+          break;
+        case 'exitFullscreen':
+          isFullScreenMode = false;
+          var inFlutter2 = !!(window.YoutubePlayerEvent || window.FlutterChannel || window.flutter_inappwebview);
+          if (!inFlutter2) {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+              (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+            }
+          }
+          break;
       }
     });
 
