@@ -609,6 +609,17 @@
           </button>
           <div class="vol-wrap" id="vol-wrap"><input type="range" id="vol-bar" min="0" max="100" value="100"
               title="Volume"></div>
+          <span id="speed-badge">1x</span>
+          <select class="ctrl-select" id="speed-select" title="Speed" aria-label="Playback speed">
+            <option value="0.25">0.25x</option>
+            <option value="0.5">0.5x</option>
+            <option value="0.75">0.75x</option>
+            <option value="1" selected>1x</option>
+            <option value="1.25">1.25x</option>
+            <option value="1.5">1.5x</option>
+            <option value="1.75">1.75x</option>
+            <option value="2">2x</option>
+          </select>
         </div>
         <div id="center-group">
           <button class="ctrl-btn" id="rewind-btn" title="Back 10s" aria-label="Rewind">
@@ -628,17 +639,6 @@
           </button>
         </div>
         <div id="right-group">
-          <span id="speed-badge">1x</span>
-          <select class="ctrl-select" id="speed-select" title="Speed" aria-label="Playback speed">
-            <option value="0.25">0.25x</option>
-            <option value="0.5">0.5x</option>
-            <option value="0.75">0.75x</option>
-            <option value="1" selected>1x</option>
-            <option value="1.25">1.25x</option>
-            <option value="1.5">1.5x</option>
-            <option value="1.75">1.75x</option>
-            <option value="2">2x</option>
-          </select>
           <select class="ctrl-select" id="quality-select" title="Quality" aria-label="Video quality">
             <option value="auto" selected>Auto</option>
           </select>
