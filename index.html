@@ -751,6 +751,7 @@
     function notifyHost(event, data) {
       var payload = { source: 'yt-flutter-player', event: event, data: data || {} };
       try { if (window.FlutterChannel && window.FlutterChannel.postMessage) window.FlutterChannel.postMessage(JSON.stringify(payload)); } catch (e) { }
+      try { if (window.YoutubePlayerEvent && window.YoutubePlayerEvent.postMessage) window.YoutubePlayerEvent.postMessage(JSON.stringify(payload)); } catch (e) { }
       try { if (window.flutter_inappwebview && window.flutter_inappwebview.callHandler) window.flutter_inappwebview.callHandler('YoutubePlayerEvent', payload); } catch (e) { }
       try { window.parent.postMessage(payload, '*'); } catch (e) { }
     }
